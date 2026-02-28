@@ -55,6 +55,10 @@ Keep documentation synchronized with code:
 
 ### Technology Choices
 
+#### Infrastructure
+
+Make sure you add github actions for autiomations that make sense: if there's a Dockerfile, make and release a package. since you're building tests make sure you have actions to run the tests on push, &ct
+
 #### ❌ No React
 
 This bears repeating: **Do not use React**.
