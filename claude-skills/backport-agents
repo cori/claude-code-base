@@ -1,0 +1,51 @@
+# Backport claude.md / AGENTS.md changes to template and implementors
+
+When asked to backport agent guidelines, do the following:
+
+## Find the template and implementors
+
+```bash
+gh repo list cori --json name,updatedAt --limit 100 | jq -r '.[].name'
+```
+
+The template is `cori/claude-code-base` (has `claude.md`).
+Implementors are repos that contain `claude.md` or `CLAUDE.md`. Find them with:
+
+```bash
+gh search repos --owner cori --limit 100 | # then check each for claude.md
+```
+
+Or enumerate known implementors: `fpv-inventory`, `fpv-tools`, `logglr`, `mcproxifier`,
+`video-analysis-pipeline`, `claude-val-idator`.
+
+This repo (`flowchart`) uses `AGENTS.md` instead — it should also receive relevant updates.
+
+## Backport approach
+
+Because commit signing is locked to the current session's repo, use the **GitHub API**
+directly rather than git clone + commit. For each target repo:
+
+1. `GET /repos/cori/{repo}/contents/claude.md` — get file content + SHA
+2. `POST /repos/cori/{repo}/git/refs` — create branch `claude/backport-*`
+3. Patch the content (Python `sys.argv` trick works well for in-place edits)
+4. `PUT /repos/cori/{repo}/contents/claude.md` — update file on branch
+5. `POST /repos/cori/{repo}/pulls` — open draft PR
+
+Skip repos that already contain the new content. Skip `claude-code-base` last (or first)
+as the canonical source.
+
+## What to backport
+
+Only universal guidelines belong in `claude-code-base` and all implementors:
+- PR/commit hygiene (no session URLs, no agent identifiers)
+- General collaboration/workflow patterns
+
+Project-specific rules (e.g. TypeScript import ordering, SQLite patterns) stay in
+the project's own `AGENTS.md` / `claude.md` only.
+
+## Install gh if missing
+
+```bash
+apt-get install -y gh
+# GH_TOKEN env var is automatically picked up — no further auth needed
+```
