@@ -136,6 +136,22 @@ Surface hidden assumptions:
 - Third-party libraries
 - Trivial getters/setters
 
+
+## Skills
+
+Reusable Claude Code skills live in `claude-skills/`. To install them on any machine:
+
+```bash
+bash install-skills.sh
+```
+
+This copies everything in `claude-skills/` to `~/.claude/skills/`, making them available
+as `/skill-name` slash commands in any Claude Code session.
+
+### Available skills
+
+- **backport-agents** — propagates `claude.md` / `AGENTS.md` updates from this template to all implementor repos via the GitHub API
+
 ---
 
 Remember: **No React. Test first. Commit often. Document everything. Ask questions.**
