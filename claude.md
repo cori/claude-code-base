@@ -146,7 +146,7 @@ Reusable Claude Code skills live in `claude-skills/`. To install them on any mac
 bash install-skills.sh
 ```
 
-This copies everything in `claude-skills/` to `~/.claude/skills/`, making them available
+This copies top-level files from `claude-skills/` to `~/.claude/skills/`, making them available
 as `/skill-name` slash commands in any Claude Code session.
 
 ### Available skills
