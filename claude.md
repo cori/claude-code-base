@@ -4,6 +4,10 @@ This repository is a template for building using Claude Code. This guide establi
 
 We'll be working on the repo through GitHub issues; as soon as you've finished reading this file make sure you have the `gh` client installed and that you can access issues. You can install it with `apt-get install -y gh`.
 
+## Environment
+
+The `GH_TOKEN` environment variable is pre-configured with a token that has access to all `cori/*` repositories. Use `gh` for all cross-repo GitHub operations — it works across all repos in the org, not just the one this session was opened against.
+
 ## Collaboration
 
 ### Pull Requests & Commits
@@ -152,6 +156,8 @@ as `/skill-name` slash commands in any Claude Code session.
 ### Available skills
 
 - **backport-agents** — propagates `claude.md` / `AGENTS.md` updates from this template to all implementor repos via the GitHub API
+
+Whenever you make a change to universal guidelines in this file, run `/backport-agents` immediately after to fan the change out to all implementors.
 
 ---
 
