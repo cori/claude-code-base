@@ -1,0 +1,54 @@
+# Backport claude.md / AGENTS.md changes to template and implementors
+
+When asked to backport agent guidelines, do the following:
+
+## Find the template and implementors
+
+Determine the owner of the current repo (use `gh repo view --json owner -q .owner.login`).
+The template is `<owner>/claude-code-base` (has `claude.md`).
+
+List all repos for that owner:
+
+```bash
+gh repo list <owner> --json name --limit 100 --jq '.[].name'
+```
+
+Implementors are repos that contain `claude.md` or `CLAUDE.md`. For each repo name from the
+list above, check with:
+
+```bash
+gh api repos/<owner>/<repo>/contents/claude.md --silent && echo "has claude.md"
+```
+
+Or enumerate known implementors from the owner's `claude-code-base` readme / wiki if available.
+
+## Backport approach
+
+Because commit signing is locked to the current session's repo, use the **GitHub API**
+directly rather than git clone + commit. For each target repo:
+
+1. `GET /repos/<owner>/{repo}/contents/claude.md` — get file content + SHA
+2. `POST /repos/<owner>/{repo}/git/refs` — create branch `claude/backport-*`
+3. Patch the content (Python `sys.argv` trick works well for in-place edits)
+4. `PUT /repos/<owner>/{repo}/contents/claude.md` — update file on branch
+5. `POST /repos/<owner>/{repo}/pulls` — open draft PR
+
+Skip repos that already contain the new content. Skip `claude-code-base` itself
+as the canonical source.
+
+## What to backport
+
+Only universal guidelines belong in `claude-code-base` and all implementors:
+- PR/commit hygiene (no session URLs, no agent identifiers)
+- General collaboration/workflow patterns
+
+Project-specific rules (e.g. TypeScript import ordering, SQLite patterns) stay in
+the project's own `AGENTS.md` / `claude.md` only.
+
+## Install gh if missing
+
+```bash
+apt-get install -y gh
+# Authenticate with: gh auth login
+# Or set the GH_TOKEN environment variable before running gh commands
+```

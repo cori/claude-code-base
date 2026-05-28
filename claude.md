@@ -4,6 +4,14 @@ This repository is a template for building using Claude Code. This guide establi
 
 We'll be working on the repo through GitHub issues; as soon as you've finished reading this file make sure you have the `gh` client installed and that you can access issues. You can install it with `apt-get install -y gh`.
 
+## Collaboration
+
+### Pull Requests & Commits
+
+- Do not include session URLs, agent names, or tool identifiers in PR bodies, commit messages, or code comments — keep those to chat only
+- PR descriptions: summary bullets + a test plan checklist is enough
+- Always reference the closing issue with `Resolves #X` (or `Closes #X`) in the PR body so GitHub auto-closes it on merge
+
 ## Development Philosophy and Methodology
 
 ### Red-Green-Refactor (TDD)
@@ -128,6 +136,22 @@ Surface hidden assumptions:
 - Val.town SDK functions (they're tested)
 - Third-party libraries
 - Trivial getters/setters
+
+
+## Skills
+
+Reusable Claude Code skills live in `claude-skills/`. To install them on any machine:
+
+```bash
+bash install-skills.sh
+```
+
+This copies top-level files from `claude-skills/` to `~/.claude/skills/`, making them available
+as `/skill-name` slash commands in any Claude Code session.
+
+### Available skills
+
+- **backport-agents** — propagates `claude.md` / `AGENTS.md` updates from this template to all implementor repos via the GitHub API
 
 ---
 
