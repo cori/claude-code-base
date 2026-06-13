@@ -7,13 +7,14 @@ on:
     types: [submitted]
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
 
 jobs:
   request-copilot-review:
     if: github.event_name == 'pull_request' && github.event.pull_request.draft == false
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
     steps:
       - name: Request Copilot review
         env:
@@ -42,7 +43,7 @@ jobs:
                 }
               }
             ' \
-            --jq '[.data.repository.suggestedActors.nodes[] | select(.login | ascii_downcase | test("^copilot")) | .id] | first // ""')
+            --jq '[.data.repository.suggestedActors.nodes[] | select(.login == "Copilot" or .login == "copilot-pull-request-reviewer") | .id] | first // ""')
 
           if [ -z "$copilot_id" ]; then
             echo "::warning::Copilot reviewer not available on this repo. Enable Copilot code review in repo settings."
@@ -66,6 +67,9 @@ jobs:
       github.event.review.user.login == 'copilot-pull-request-reviewer[bot]' &&
       github.event.pull_request.draft == false
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - name: Decide whether Copilot requested any changes
         id: check
