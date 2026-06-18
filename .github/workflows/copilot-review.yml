@@ -26,6 +26,7 @@ jobs:
           NAME: ${{ github.event.repository.name }}
           PR_NODE_ID: ${{ github.event.pull_request.node_id }}
         run: |
+          set -euo pipefail
           # Copilot can't be requested via the REST `requested_reviewers`
           # endpoint (it rejects non-collaborators). Use the GraphQL
           # `suggestedActors` lookup to find Copilot's bot id, then call
@@ -84,6 +85,7 @@ jobs:
           REVIEW_ID: ${{ github.event.review.id }}
           REVIEW_STATE: ${{ github.event.review.state }}
         run: |
+          set -euo pipefail
           if [ "$REVIEW_STATE" = "changes_requested" ]; then
             echo "Copilot requested changes; skipping auto-merge."
             echo "merge=false" >> "$GITHUB_OUTPUT"
