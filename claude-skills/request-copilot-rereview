@@ -1,0 +1,52 @@
+# Re-request Copilot review after addressing review comments
+
+When watching a PR via `subscribe_pr_activity` and you push a commit in
+response to Copilot's review comments, also re-request review from Copilot
+so it re-evaluates the new commit. The auto-merge workflow in
+`.github/workflows/copilot-review.yml` only fires on `pull_request`
+(opened/ready_for_review) and `pull_request_review` events — a plain
+push won't trigger Copilot. Without an explicit re-request, the loop
+stalls.
+
+## How
+
+Prefer the GitHub MCP tool if available:
+
+- `mcp__github__request_copilot_review` (owner, repo, pullNumber)
+
+Otherwise call GraphQL directly (same approach the workflow uses):
+
+```bash
+copilot_id=$(gh api graphql -F owner="$OWNER" -F name="$NAME" -f query='
+  query($owner: String!, $name: String!) {
+    repository(owner: $owner, name: $name) {
+      suggestedActors(capabilities: [CAN_BE_ASSIGNED], first: 100) {
+        nodes { login ... on Bot { id } ... on User { id } }
+      }
+    }
+  }
+' --jq '[.data.repository.suggestedActors.nodes[] | select(.login | IN("Copilot","Copilot[bot]","copilot-pull-request-reviewer","copilot-pull-request-reviewer[bot]")) | .id] | first // ""')
+
+gh api graphql -F pullRequestId="$PR_NODE_ID" -F userId="$copilot_id" -f query='
+  mutation($pullRequestId: ID!, $userId: ID!) {
+    requestReviews(input: {pullRequestId: $pullRequestId, userIds: [$userId]}) {
+      pullRequest { id }
+    }
+  }
+'
+```
+
+## When NOT to re-request
+
+- The user told you to stop, unsubscribe, or merge as-is.
+- The push wasn't a response to Copilot feedback (unrelated work, manual
+  fix from the user, etc.).
+- The PR is already merged or closed.
+- Copilot isn't available on the repo (empty `copilot_id`) — surface a
+  one-line warning to the user instead of looping.
+
+## Cap the loop
+
+If Copilot keeps surfacing trivial nits across 3+ rounds with no
+substantive improvement, stop re-requesting and summarize the remaining
+suggestions to the user. Don't spin on stylistic preferences forever.
