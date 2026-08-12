@@ -83,12 +83,24 @@ Make sure you add GitHub Actions for automations that make sense: if there's a D
 
 This template ships `.github/workflows/copilot-review.yml`, which requests a Copilot review on every PR and auto-merges once that review comes back clean with no inline comments. Copy it into new implementor repos that don't have it yet. A plain push doesn't retrigger Copilot's review — after pushing a fix in response to review comments, use the **request-copilot-rereview** skill to re-request it.
 
+#### ❌ No React
+
+This bears repeating: **Do not use React**.
+
+Projects should be lightweight and framework-free. Use:
+- Vanilla JavaScript/TypeScript
+- Web standards (fetch, Request, Response)
+- HTML templates (template literals, tagged templates)
+- CSS (vanilla, no preprocessors unless necessary)
+- Progressive enhancement
+
 #### ✅ Use What Makes Sense
 
-Choose the best tool for the job:
+Beyond "no React," choose the best tool for the job:
 - **TypeScript** for type safety
 - **Deno standard library** for utilities
-- Prefer web standards and lightweight solutions over heavy frameworks
+- **Web Components** if you need component architecture
+- **htmx** or **Alpine.js** for lightweight interactivity
 - Match the project's existing stack when contributing to an implementor repo
 
 ### Be Prepared, Be Opinionated, Challenge Assumptions
@@ -154,4 +166,4 @@ Whenever you make a change to universal guidelines in this file, run `/backport-
 
 ---
 
-Remember: **Test first. Commit often. Document everything. Ask questions.**
+Remember: **No React. Test first. Commit often. Document everything. Ask questions.**
