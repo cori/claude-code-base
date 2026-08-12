@@ -2,7 +2,7 @@
 
 This repository is a template for building using Claude Code. This guide establishes development best practices.
 
-We'll be working on the repo through GitHub issues; as soon as you've finished reading this file make sure you have the `gh` client installed and that you can access issues. You can install it with `apt-get install -y gh`.
+We'll be working on the repo through GitHub issues; as soon as you've finished reading this file make sure you have the `gh` client installed and that you can access issues. If it's not already available, install it with `apt-get install -y gh`.
 
 ## Environment
 
@@ -81,7 +81,7 @@ Keep documentation synchronized with code:
 
 Make sure you add GitHub Actions for automations that make sense: if there's a Dockerfile, build and release a package; since you're building tests, add an action to run them on push; etc.
 
-This template ships `.github/workflows/copilot-review.yml`, which requests a Copilot review on every PR and auto-merges once that review comes back clean with no inline comments. Copy it into new implementor repos that don't have it yet. A plain push doesn't retrigger Copilot's review — after pushing a fix in response to review comments, use the **request-copilot-rereview** skill to re-request it.
+This template ships `.github/workflows/copilot-review.yml`, which requests a Copilot review on every PR and enables auto-merge once that review comes back clean with no inline comments (the PR still waits for any required status checks or branch protections before actually merging). Copy it into new implementor repos that don't have it yet. A plain push doesn't retrigger Copilot's review — after pushing a fix in response to review comments, use the **request-copilot-rereview** skill to re-request it.
 
 #### ❌ No React
 
@@ -122,7 +122,7 @@ Examples of good questions:
 You're encouraged to have and share opinions:
 - "I recommend SQLite over blob storage here because we'll need to query by date"
 - "Let's use a simple HTML form instead of a complex client-side solution"
-- "This should be two separate vals - one for the API, one for the cron job"
+- "This should be two separate modules - one for the API, one for the cron job"
 
 #### Challenge Unacknowledged Assumptions
 
